@@ -129,7 +129,11 @@ Events are deduplicated on the composite key `(event_id, service, event_type)`. 
 
 For each group that shares the same `(event_id, service, event_type)`, events are sorted by `timestamp DESC` and only the **most recent** copy is kept in silver. All older copies are written to the DLQ with `rejection_reason = duplicate_event_id`.
 
-#### Step 4 — Schema contract (`TARGET_COLUMNS`)
+#### Step 4 — Reject events with non-numeric `status_code`
+
+Before casting types, events whose `status_code` cannot be parsed as a number (e.g. `"ERR"`, `"N/A"`) are sent to the DLQ with `rejection_reason = invalid_status_code`. This is handled as an explicit rejection rather than a silent `NULL` coercion so that the cause is auditable and the event is not silently included in — or silently excluded from — error-rate calculations.
+
+#### Step 5 — Schema contract (`TARGET_COLUMNS`)
 
 A fixed silver schema is enforced:
 
@@ -144,7 +148,7 @@ TARGET_COLUMNS = [
 - **Missing optional columns** are added as `NULL`
 - **Types** are cast: string columns to `pd.StringDtype`, `latency_ms` to `float64`, `status_code` to nullable `Int64`, `timestamp` to `datetime64[UTC]`
 
-#### Step 5 — Imputation and normalization
+#### Step 6 — Imputation and normalization
 
 | Field | Rule |
 | :--- | :--- |

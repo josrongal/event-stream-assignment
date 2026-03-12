@@ -30,7 +30,10 @@ class MetricsAggregator:
         df['time_window'] = df['timestamp'].dt.floor('1min')
 
         # Add error flag
-        df['is_error'] = ~df['status_code'].between(200, 299, inclusive='both')
+        # NA status_codes (e.g. originally invalid values like 'ERR' or out-of-range
+        # codes set to None by the cleaner) are treated as errors: fillna(False) on
+        # the between() result means "not in 200-299" → is_error=True for those rows.
+        df['is_error'] = ~df['status_code'].between(200, 299, inclusive='both').fillna(False)
 
         # Aggregate by service and time window
         agg_metrics = df.groupby(['service', 'time_window']).agg(

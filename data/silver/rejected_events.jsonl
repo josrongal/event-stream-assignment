@@ -64,3 +64,7 @@
 {"event_id":"d1728633","timestamp":1736676191000,"service":"catalog","event_type":"request_completed","latency_ms":48,"status_code":400,"user_id":"svc302","extra_field":null,"rejection_reason":"duplicate_event_id"}
 {"event_id":"e1378f80","timestamp":1736680164000,"service":"search","event_type":"request_completed","latency_ms":77,"status_code":200,"user_id":"u151","extra_field":null,"rejection_reason":"duplicate_event_id"}
 {"event_id":"efab7198","timestamp":1736676465000,"service":"catalog","event_type":"request_started","latency_ms":111,"status_code":301,"user_id":"svc347","extra_field":null,"rejection_reason":"duplicate_event_id"}
+{"event_id":"38c24085","timestamp":1736681307000,"service":"checkout","event_type":"request_completed","latency_ms":268,"status_code":"ERR","user_id":"u56","extra_field":null,"rejection_reason":"invalid_status_code"}
+{"event_id":"53fb212a","timestamp":1736672886000,"service":"search","event_type":"request_started","latency_ms":287,"status_code":"ERR","user_id":"svc126","extra_field":null,"rejection_reason":"invalid_status_code"}
+{"event_id":"dd79736e","timestamp":1736682083000,"service":"checkout","event_type":"request_completed","latency_ms":85,"status_code":"ERR","user_id":"svc113","extra_field":null,"rejection_reason":"invalid_status_code"}
+{"event_id":"f8ac763d","timestamp":1736679360000,"service":"search","event_type":"request_started","latency_ms":167,"status_code":"ERR","user_id":"svc334","extra_field":null,"rejection_reason":"invalid_status_code"}

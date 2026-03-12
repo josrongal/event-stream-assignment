@@ -79,6 +79,16 @@ class EventCleaner:
             logger.warning(f"Rejected {dup_mask.sum()} events: duplicate (event_id, service, event_type)")
             df = df_sorted[~dup_mask].copy()
 
+        # Reject events with non-numeric, non-null status_code (e.g. 'ERR')
+        sc_numeric = pd.to_numeric(df['status_code'], errors='coerce')
+        mask_invalid_sc = sc_numeric.isna() & df['status_code'].notna()
+        if mask_invalid_sc.any():
+            rejected = df[mask_invalid_sc].copy()
+            rejected['rejection_reason'] = 'invalid_status_code'
+            rejected_events.append(rejected)
+            logger.warning(f"Rejected {mask_invalid_sc.sum()} events: invalid status_code")
+            df = df[~mask_invalid_sc].copy()
+
         df = self._apply_schema_contract(df)
 
         # Impute missing user_id
@@ -134,7 +144,13 @@ class EventCleaner:
         df["user_id"] = df["user_id"].astype("string")
 
         df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True, errors="coerce")
-        df["latency_ms"] = pd.to_numeric(df["latency_ms"], errors="coerce").astype("float64")
+        lat = pd.to_numeric(df["latency_ms"], errors="coerce")
+        mask = lat.isna() & df["latency_ms"].notna()
+        if mask.any():
+            extracted = df.loc[mask, "latency_ms"].astype(str).str.extract(r"^(\d+(?:\.\d+)?)")[0]
+            lat = lat.copy()
+            lat[mask] = pd.to_numeric(extracted, errors="coerce")
+        df["latency_ms"] = lat.astype("float64")
         df["status_code"] = pd.to_numeric(df["status_code"], errors="coerce").astype("Int64")
         return df
 

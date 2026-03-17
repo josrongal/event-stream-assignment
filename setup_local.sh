@@ -1,36 +1,32 @@
 #!/bin/bash
-# Script to run the project locally
+# Script to setup the project locally using Poetry
 
 set -e
 
 echo "Event Stream Data Pipeline - Local Setup"
 echo "============================================="
 
-# Create virtual environment if it doesn't exist
-if [ ! -d "venv" ]; then
-    echo -e "\n Creating virtual environment..."
-    python3 -m venv venv
+# Check if Poetry is installed
+if ! command -v poetry &> /dev/null; then
+    echo "Error: Poetry is not installed."
+    echo "Install Poetry from: https://python-poetry.org/docs/#installation"
+    exit 1
 fi
 
-# Activate virtual environment
-echo -e "\n Activating virtual environment..."
-source venv/bin/activate
-
-# Install dependencies
-echo -e "\n Installing dependencies..."
-pip install -q --upgrade pip
-pip install -q -r requirements.txt
+# Install dependencies using Poetry
+echo -e "\n Installing dependencies with Poetry..."
+poetry install
 
 # Run data pipeline
 echo -e "\n Running data pipeline..."
-python src/pipeline.py
+poetry run python src/pipeline.py
 
 # Show instructions to run the API
 echo -e "\n Setup completed!"
 echo ""
 echo "To start the API, run:"
 echo ""
-echo -e " uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000"
+echo -e " poetry run uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000"
 echo ""
 echo "Or simply:"
 echo ""

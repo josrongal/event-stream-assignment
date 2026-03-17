@@ -33,7 +33,15 @@ data/
 
 ### Option 1: Local (without Docker)
 
-#### 1. Install dependencies
+#### Prerequisites
+
+- Python 3.12+
+- Poetry ([install](https://python-poetry.org/docs/#installation))
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+#### 1. Install dependencies and run pipeline
 
 ```bash
 # Using the setup script (recommended)
@@ -41,33 +49,36 @@ chmod +x setup_local.sh run_api.sh run_tests.sh
 ./setup_local.sh
 
 # Or manually
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-#### 2. Run the data pipeline
-
-```bash
-python src/pipeline.py
+poetry install
+poetry run python src/pipeline.py
 ```
 
 This will:
+- Install all dependencies from `pyproject.toml`
 - Clean and validate events from `data/bronze/`
 - Generate aggregated metrics
-- Save outputs to `data/silver/` and `data/gold/`
+- Save outputs to `data/silver/` and `data/gold/` folders
 
-#### 3. Start the API
+#### 2. Start the API
 
 ```bash
 # Using the run script
 ./run_api.sh
 
 # Or manually
-uvicorn src.api.main:app --reload
+poetry run uvicorn src.api.main:app --reload
 ```
 
 API will be available at: http://localhost:8000
+
+#### 3. Run tests
+
+```bash
+./run_tests.sh
+
+# Or manually
+poetry run pytest tests/ -v --cov=src --cov-report=term-missing
+```
 
 ---
 

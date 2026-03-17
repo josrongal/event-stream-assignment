@@ -3,15 +3,24 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy requirements
-COPY requirements.txt .
+# Install Poetry
+RUN pip install --no-cache-dir poetry
 
-# Install dependencies
+# Install poetry-plugin-export (required for export command)
+RUN pip install --no-cache-dir poetry-plugin-export
+
+# Copy dependency files
+COPY pyproject.toml poetry.lock .
+
+# Generate requirements.txt from poetry.lock
+RUN poetry export -f requirements.txt --output requirements.txt
+
+# Install dependencies from generated requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source code
 COPY src/ ./src/
-COPY data/ ./data/
+COPY data/bronze ./data/bronze
 
 # Expose API port
 EXPOSE 8000

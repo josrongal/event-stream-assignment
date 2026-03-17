@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "event-stream-assignment"
+version = "0.1.0"
+description = "Event streaming data pipeline with schema validation"
+authors = ["Jose Maria <josemarimelli@hotmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pandas = "^2.0.0"
+fastapi = "^0.104.0"
+uvicorn = {extras = ["standard"], version = "^0.24.0"}
+pydantic = "^2.0.0"
+pyarrow = "^15.0.0"
+great-expectations = "^0.18.0"
+pyyaml = "^6.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+pytest-cov = "^4.0.0"
+httpx = "^0.25.0"
+pylint = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
